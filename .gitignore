@@ -1,0 +1,28 @@
+# Game data and local inputs: never commit Capcom files
+backup/
+*.DAT
+*.dat
+*.bin
+*.cue
+*.iso
+*.zip
+*.ppf
+*.bps
+*.wav
+*.mp3
+*.raw
+music_check/
+
+# Build outputs (publish the installer as a GitHub Release instead)
+build_tmp/
+mod/*.exe
+reverb/*.dll
+reverb/*.exe
+reverb/*.obj
+reverb/*.lib
+reverb/*.exp
+
+# Local tool state
+__pycache__/
+*.log
+BOF4_reverb.ini
