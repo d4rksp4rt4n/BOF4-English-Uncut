@@ -6,8 +6,15 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
+
+[assembly: System.Reflection.AssemblyTitle("Breath of Fire IV - English Uncut installer")]
+[assembly: System.Reflection.AssemblyProduct("Breath of Fire IV - English Uncut")]
+[assembly: System.Reflection.AssemblyVersion(Installer.Version + ".0.0")]
+[assembly: System.Reflection.AssemblyFileVersion(Installer.Version + ".0.0")]
 
 class Variant { public string Path, Key, Src, Dst; public List<string> Ops = new List<string>(); }
 
@@ -17,6 +24,9 @@ class Installer : Form
     readonly List<Variant> variants = new List<Variant>();
     readonly TextBox folder = new TextBox(), log = new TextBox();
     readonly List<CheckBox> boxes = new List<CheckBox>();
+    public const string Version = "1.1";           // release tag on GitHub: "1.1" or "1.1.0"
+    const string Repo = "d4rksp4rt4n/bof4-english-uncut";
+    readonly LinkLabel update = new LinkLabel { Visible = false, AutoSize = true };
     const string BackupDir = "BOF4_Uncut_EN_backup";
     static readonly string Empty = Sha(new byte[0]);
 
@@ -36,7 +46,7 @@ class Installer : Form
     Installer()
     {
         LoadManifest();
-        Text = "Breath of Fire IV - English Uncut"; Font = new Font("Segoe UI", 9f);
+        Text = "Breath of Fire IV - English Uncut " + Version; Font = new Font("Segoe UI", 9f);
         BackColor = Bg; ForeColor = Fg;
         FormBorderStyle = FormBorderStyle.FixedSingle; MaximizeBox = false; StartPosition = FormStartPosition.CenterScreen;
         try { Icon = Icon.ExtractAssociatedIcon(Application.ExecutablePath); } catch { }
@@ -69,6 +79,10 @@ class Installer : Form
         var about = MakeButton("About / credits", Panel); about.SetBounds(494, y + 6, 130, 32);
         about.Click += delegate { ShowAbout(); };
         Controls.Add(about);
+        update.Location = new Point(346, y + 14); update.LinkColor = Color.FromArgb(232, 150, 90);
+        update.LinkClicked += delegate { try { System.Diagnostics.Process.Start("https://github.com/" + Repo + "/releases/latest"); } catch { } };
+        Controls.Add(update);
+        Load += delegate { CheckForUpdate(); };
         apply.Click += delegate { Run(boxes.Where(b => b.Checked).Select(b => (string)b.Tag).ToList()); };
         restore.Click += delegate { Run(new List<string>()); };
         log.SetBounds(16, y + 48, 608, 110);
@@ -99,7 +113,7 @@ class Installer : Form
                            FormBorderStyle = FormBorderStyle.FixedDialog, MaximizeBox = false, MinimizeBox = false,
                            StartPosition = FormStartPosition.CenterParent, ShowInTaskbar = false, Icon = Icon };
         int y = 14;
-        var head = new Label { Text = "Breath of Fire IV (GOG, English) - Uncut & fixes", UseMnemonic = false, AutoSize = true, Location = new Point(16, y),
+        var head = new Label { Text = "Breath of Fire IV (GOG, English) - Uncut & fixes " + Version, UseMnemonic = false, AutoSize = true, Location = new Point(16, y),
                                Font = new Font("Segoe UI", 10.5f, FontStyle.Bold) };
         var note = new Label { Text = "Breath of Fire IV is (c) Capcom. This is an unofficial fan patch; it changes only your own game files.",
                                Location = new Point(16, y + 24), Size = new Size(540, 34), ForeColor = Dim };
@@ -123,6 +137,38 @@ class Installer : Form
         f.Controls.Add(close); f.AcceptButton = close; f.CancelButton = close;
         f.ClientSize = new Size(576, y + 54);
         f.ShowDialog(this);
+    }
+
+    static System.Version Ver(string s)                   // "v1.1" / "1.1" / "1.1.0" -> 1.1.0
+    {
+        var p = s.Trim().TrimStart('v', 'V').Split('.').ToList();
+        while (p.Count < 3) p.Add("0");
+        return new System.Version(string.Join(".", p.Take(3)));
+    }
+
+    // Asks GitHub for the latest release tag in the background; silent on any failure (offline etc.).
+    void CheckForUpdate()
+    {
+        try
+        {
+            ServicePointManager.SecurityProtocol |= (SecurityProtocolType)3072;   // TLS 1.2 (GitHub requires it)
+            var wc = new WebClient();
+            wc.Headers[HttpRequestHeader.UserAgent] = "BOF4-Uncut-EN-installer";
+            wc.DownloadStringCompleted += (s, e) => {
+                try
+                {
+                    var tag = Regex.Match(e.Result, "\"tag_name\"\\s*:\\s*\"([^\"]+)\"").Groups[1].Value;
+                    if (Ver(tag) <= Ver(Version)) return;
+                    update.Text = "Update available: " + tag;
+                    update.Visible = true;
+                    Log("A newer version (" + tag + ") is available on the GitHub releases page.");
+                }
+                catch { }
+                finally { wc.Dispose(); }
+            };
+            wc.DownloadStringAsync(new Uri("https://api.github.com/repos/" + Repo + "/releases/latest"));
+        }
+        catch { }
     }
 
     static string FindGog()

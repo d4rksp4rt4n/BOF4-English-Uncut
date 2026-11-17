@@ -1,5 +1,5 @@
-Breath of Fire IV - English Uncut (GOG version)
-================================================
+Breath of Fire IV - English Uncut 1.1 (GOG version)
+=====================================================
 
 Run BOF4_Uncut_EN.exe, check the game folder, tick the options you want and press Apply.
 Options:
@@ -39,6 +39,7 @@ Saldine Island creek, the restored bath scene still counts as "not seen". Enteri
 then starts it in the wrong state and the game freezes. Use a save from before the creek, or
 install without "Restore cut scenes" for that playthrough.
 
+On start, the installer asks GitHub whether a newer release is out and shows a link if so.
 You can run it again at any time to change the options. "Restore original files" undoes
 everything; originals are kept in BOF4_Uncut_EN_backup.
 The installer checks every file before changing anything. It refuses to run on files that

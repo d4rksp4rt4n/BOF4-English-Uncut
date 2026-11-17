@@ -21,7 +21,8 @@ option can be switched on or off, and "Restore original files" undoes everything
 2. Download `BOF4_Uncut_EN.exe` from this repository's **Releases** page, put it next to `BOF4.exe`
    and run it. Tick the options you want and press **Apply**.
 3. Originals are kept in `BOF4_Uncut_EN_backup`. Run the installer again any time to change options or
-   to restore the original files.
+   to restore the original files. On start it checks GitHub for a newer release and shows a link if
+   there is one (nothing is downloaded or sent).
 
 Notes:
 - **Saves past Saldine:** a save made in the unmodded game after the party reached the Saldine Island
