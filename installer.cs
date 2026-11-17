@@ -85,7 +85,7 @@ class Installer : Form
     static readonly string[][] Credits = {
         new[] { "Project page, updates, issues", "github.com/d4rksp4rt4n/bof4-english-uncut", "https://github.com/d4rksp4rt4n/bof4-english-uncut" },
         new[] { "Restored scene scripts, text", "navarchos - Breath of Fire IV Uncensored (PS1)", "https://www.romhacking.net/hacks/7192/" },
-        new[] { "Better Descriptions", "Naro", "https://www.dragnier.net/breath-of-fire-iv/breath-of-fire-iv-mods/" },
+        new[] { "Better Descriptions", "Naro", "https://www.romhacking.net/hacks/9575/" },
         new[] { "Dengeki Store graphics", "Japanese GOG release of Breath of Fire IV (Capcom)", null },
         new[] { "PlayStation reverb algorithm", "psx-spx (nocash PSX specifications)", "https://psx-spx.consoledev.net/soundprocessingunitspu/" },
         new[] { "Background art", "Ar,, (SteamGridDB)", "https://www.steamgriddb.com/hero/145909" },

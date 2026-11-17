@@ -49,7 +49,7 @@ Files changed: BOF4.exe, bof4_reverb.dll (added) and DAT\ AREAM027, AREAD157, AR
 
 Credits
   - Restored scene scripts and English lines: navarchos' "Breath of Fire IV Uncensored" PS1 hack
-  - Better Descriptions: Naro (PC version from Nexus Mods, included unchanged)
+  - Better Descriptions: Naro (https://www.romhacking.net/hacks/9575/; PC version included unchanged)
   - Dengeki Store portrait and palette: from the Japanese GOG release, where the English port dropped them
   - PlayStation reverb: the SPU reverb as documented in psx-spx (nocash)
   - Installer art (SteamGridDB): background by "Ar,,", logo by Llisandur, icon by Rebochan

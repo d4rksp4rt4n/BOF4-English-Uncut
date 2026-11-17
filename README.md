@@ -114,7 +114,7 @@ The loop analysis in `loops\` (only needed to regenerate `reverb\loops_table.h`)
 ## Credits
 
 - Restored scene scripts and text: **navarchos** – [Breath of Fire IV Uncensored (PS1)](https://www.romhacking.net/hacks/7192/)
-- Better Descriptions: **Naro**
+- Better Descriptions: **Naro** – [Better Descriptions](https://www.romhacking.net/hacks/9575/)
 - PS1 reverb algorithm: [psx-spx](https://psx-spx.consoledev.net/soundprocessingunitspu/) (nocash)
 - Installer art (SteamGridDB): background by **Ar,,**, logo by **Llisandur**, icon by **Rebochan**
 - Dengeki Store graphics: the Japanese GOG release of Breath of Fire IV
