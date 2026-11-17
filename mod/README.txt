@@ -21,9 +21,9 @@ Options:
     end; those still restart from the beginning, but without the click.
   - Scias learns Identify: the English release removed Scias' Identify ability (it shows an
     enemy's HP, drops and weaknesses). This puts it back at level 3, as navarchos' PS1 hack
-    does, so a new game starts Scias with it. Known issue: on the Identify screen the
-    weakness/resistance names are drawn on top of each other and are hard to read (the PS1
-    hack redrew them as icons; not ported yet). HP, Exp, treasure and info are fine.
+    does, so a new game starts Scias with it. The weakness/resistance names, which the PC
+    port draws on top of each other, become element icons as in the PS1 hack (red = weak,
+    blue = strong).
   - Better Descriptions: item, equipment and master descriptions show hidden effects
 
 Needs only the English GOG version. No d3d9.dll or other patch is required.
@@ -45,10 +45,13 @@ The installer checks every file before changing anything. It refuses to run on f
 aren't the original English GOG ones, e.g. if the German patch's DAT files are installed.
 
 Files changed: BOF4.exe, bof4_reverb.dll (added) and DAT\ AREAM027, AREAD157, AREAD145 (scenes), AREAD068, AREAS052
-(store), AB000_00, CAMP, COMMU03, MASTER, MSHOP, SGAMEN, SHOP (descriptions).
+(store), INIT, AB000_00, BTLEND (Identify), AB000_00, CAMP, COMMU03, MASTER, MSHOP, SGAMEN, SHOP
+(descriptions).
 
 Credits
   - Restored scene scripts and English lines: navarchos' "Breath of Fire IV Uncensored" PS1 hack
+  - Identify: navarchos' "Working Identify Ability" PS1 hack (level-up entry, icon idea, the
+    Wind/Holy/Mind icon shapes)
   - Better Descriptions: Naro (https://www.romhacking.net/hacks/9575/; PC version included unchanged)
   - Dengeki Store portrait and palette: from the Japanese GOG release, where the English port dropped them
   - PlayStation reverb: the SPU reverb as documented in psx-spx (nocash)

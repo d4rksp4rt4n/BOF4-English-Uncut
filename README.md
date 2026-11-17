@@ -11,7 +11,7 @@ option can be switched on or off, and "Restore original files" undoes everything
 | Stutter fix | The per-frame screen clear runs on the GPU instead of forcing a GPU readback in GOG's ddraw wrapper (random hitches) |
 | PlayStation reverb | The PC music is dry MP3 recordings; this adds the PS1 sound chip's reverb back at runtime, using the PS1 game's own setting |
 | Correct music loops | Songs loop from their real loop point instead of replaying the intro, and without the click/gap the PC player makes at every restart |
-| Scias learns Identify | Restores the cut Identify ability at level 3 (known issue: the weakness/resistance names overlap on its screen) |
+| Scias learns Identify | Restores the cut Identify ability at level 3, with element icons for the weakness/resistance list as in the PS1 hack |
 | Better Descriptions | Naro's descriptions of hidden item, equipment and master effects |
 
 ## For players
@@ -46,7 +46,7 @@ did, where you were in the game, and, if possible, a save file.
 | Dengeki Store | Tested in game: shop and lottery work, with English text and the clerk's portrait. The signs on the building and in the shop stay Japanese: they are painted into the textures, and the store never had an English release |
 | Stutter fix, reverb | Tested over long play sessions |
 | Music loops | Many songs checked by ear and sample-exact in game; not every song in every area has been heard. Report any song whose loop sounds off (jump, gap, replayed intro), with the area |
-| Scias learns Identify | Works in game (HP, Exp, treasure, info). **Known issue:** the weakness/resistance names are drawn on top of each other. The PS1 hack redrew them as icons; that part isn't ported yet |
+| Scias learns Identify | Tested in game: HP, Exp, treasure, info, and the element icons with their weak/normal/strong colours |
 | **Steam version** | **Not supported.** The installer only accepts the English GOG files and refuses anything else, so it won't damage a Steam install. The Steam exe is protected differently and has not been examined. Help from Steam owners is welcome |
 
 ## Building from source
@@ -87,6 +87,7 @@ The loop analysis in `loops\` (only needed to regenerate `reverb\loops_table.h`)
 |---|---|
 | `build_mod.py` | builds the installer (variants, diffs, art, C# compile) |
 | `patch_uncut_en.py` | the game patches: exe code caves, restored text, Dengeki Store, Identify. Its command line is an older local patcher |
+| `identify_icons.py` | the Identify screen's element icons (font glyphs, labels); run it for a preview image |
 | `derive_scenes.py` | derives the scene redirects from the US PS1 disc and the Uncensored hack |
 | `installer.cs` | the GUI installer (WinForms) |
 | `reverb\` | `bof4_reverb.dll`: PS1 SPU reverb (`bof4_reverb.c`) and loop engine (`loops.c`, `loops_table.h`) |
@@ -104,6 +105,13 @@ The loop analysis in `loops\` (only needed to regenerate `reverb\loops_table.h`)
   dropped is re-added as x86 code. The restored English lines are appended to the areas' text tables.
 - **Dengeki Store:** two event flags held every frame, the US PS1 English text, and the two chunks the
   English port dropped (from the Japanese GOG release).
+- **Identify:** Scias' level-3 entry gets the ability back. Its Data panel draws the 12 element names one
+  Japanese character (12 px) apart, so the English names overlap. As in navarchos' PS1 hack they become
+  icons: 12 glyphs added to the game's text font (`INIT.DAT`), drawn from the PS1 element icons, so the
+  panel's red/grey/blue resistance colours tint them like letters. The labels in the battle text
+  (`AB000_00`, `BTLEND`) become those characters, and the HP separator, which shared the unknown-item
+  "?", becomes "/" (the hack's v1.1 fix). An unseen item's "?" marks are drawn 8 px apart instead of
+  12, so long names stay inside the Treasure panel.
 - **Music:** the PC version streams MP3s. A stub in the exe loads `bof4_reverb.dll`, which wraps the MP3
   decoder:
   - **Loops:** it jumps from each recording's loop end to its loop start, sample-exact, skipping the final
@@ -114,6 +122,7 @@ The loop analysis in `loops\` (only needed to regenerate `reverb\loops_table.h`)
 ## Credits
 
 - Restored scene scripts and text: **navarchos** – [Breath of Fire IV Uncensored (PS1)](https://www.romhacking.net/hacks/7192/)
+- Identify (level-up entry, element icon idea and the Wind/Holy/Mind icon shapes): **navarchos** – Breath of Fire IV: Working Identify Ability Hack (PS1)
 - Better Descriptions: **Naro** – [Better Descriptions](https://www.romhacking.net/hacks/9575/)
 - PS1 reverb algorithm: [psx-spx](https://psx-spx.consoledev.net/soundprocessingunitspu/) (nocash)
 - Installer art (SteamGridDB): background by **Ar,,**, logo by **Llisandur**, icon by **Rebochan**

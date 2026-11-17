@@ -24,7 +24,7 @@ OPTIONS = [  # id, label, description (shown in the installer)
     ("loops", "Correct music loops",
      "Songs loop from their loop point instead of replaying the intro (uses bof4_reverb.dll)."),
     ("identify", "Scias learns Identify",
-     "Restores the cut Identify ability (level 3, as in the PS1 hack). Known issue: its weakness names overlap."),
+     "Restores the cut Identify ability (level 3), with element icons on its screen as in the PS1 hack."),
     ("desc", "Better Descriptions (by Naro)",
      "Item, equipment and master descriptions list hidden effects and resistances."),
 ]
@@ -76,10 +76,15 @@ def build_variants():
     dll = open(os.path.join(HERE, "reverb", "bof4_reverb.dll"), "rb").read()
     for key in (("reverb",), ("loops",), ("reverb", "loops")):        # same DLL serves both options
         v.append(("bof4_reverb.dll", key, b"", dll))
+    for f, patch in P.IDENTIFY_DATS.items():
+        v.append(("DAT\\" + f, ("identify",), en(f), patch(en(f))))
     z = zipfile.ZipFile(DESC_ZIP)
     for n in z.namelist():
         f = n.replace(".bps", ".DAT")
-        v.append(("DAT\\" + f, ("desc",), en(f), bps(en(f), z.read(n))))
+        d = bps(en(f), z.read(n))
+        v.append(("DAT\\" + f, ("desc",), en(f), d))
+        if f in P.IDENTIFY_DATS:                                       # both options touch this file
+            v.append(("DAT\\" + f, ("identify", "desc"), en(f), P.IDENTIFY_DATS[f](d)))
     return v
 
 def ops(src, dst):

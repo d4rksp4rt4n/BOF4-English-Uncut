@@ -13,8 +13,11 @@
 #               c) stutter fix: the per-frame colour-fill clear (which GOG's ddraw.dll does by reading
 #                  the frame back from the GPU) becomes a Direct3D Clear.
 #               d) Dengeki Store unlocked (event flags 0x8D/0xA5 held every frame).
+#               e) Scias learns Identify; its element names become icons (identify_icons.py: INIT.DAT font,
+#                  AB000_00/BTLEND labels, glyph metrics in the exe).
 #               Dengeki Store text (AREAD068/AREAS052) = US PS1 English; missing chunks from the JP GOG release.
 import base64, os, shutil, struct, sys, zlib
+import identify_icons
 
 GAME = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DAT, EN = os.path.join(GAME, "DAT"), os.path.join(GAME, "DAT_backup")
@@ -339,6 +342,9 @@ def music_code(reverb, loops):
 # Identify: the US release removed Scias' Identify (ability 0xEF, MAGIC239) from his level-up table; the
 # PS1 Uncensored hack (navarchos' identify_3) puts it back at level 3. Entries are 8 bytes, the first is the
 # ability learned; the screen itself is still in the PC exe. New games then start Scias with Identify.
+# Its element names overlap on the PC too; identify_icons.py turns them into icons (IDENTIFY_DATS + metrics).
+IDENTIFY_DATS = {"INIT.DAT": identify_icons.patch_font,
+                 "AB000_00.DAT": identify_icons.patch_labels, "BTLEND.DAT": identify_icons.patch_labels}
 SCIAS_LEVELS = bytes.fromhex("0700060017101322" "1f000b001e102131")   # his level 1 and 2 entries
 IDENTIFY = 0xEF
 
@@ -384,6 +390,8 @@ def patch_exe(d, parts=EXE_PARTS):
     assert lv > 0 and d.count(SCIAS_LEVELS) == 1 and d[lv + 16] == 0, "Scias' level-up table not as expected"
     if "identify" in parts:
         d[lv + 16] = IDENTIFY                              # level 3 entry
+        d[:] = identify_icons.patch_metrics(d, lambda va: va - DATA_VA + DATA_RAW)
+        d[:] = identify_icons.patch_code(d, fo)            # unknown-item "?" spacing
     if "uncut" in parts:
         d[fo(CAVE):fo(CAVE) + len(code)] = code
         d[fo(SITE):fo(SITE) + 6] = b"\x0f\x85" + rel(SITE + 6, CAVE)
@@ -403,7 +411,7 @@ def install():
     switched = 0
     for f in os.listdir(EN):
         src, dst = os.path.join(EN, f), os.path.join(DAT, f)
-        if not os.path.isfile(src) or f in LINES or f in STORE:
+        if not os.path.isfile(src) or f in LINES or f in STORE or f in IDENTIFY_DATS:
             continue
         if os.path.exists(dst) and not same(src, dst):
             keep = os.path.join(BAK, "german", f)
@@ -421,6 +429,11 @@ def install():
         if not os.path.exists(keep):
             shutil.copy2(dst, keep)
         open(dst, "wb").write(patch_store(open(os.path.join(EN, f), "rb").read()))
+    for f, patch in IDENTIFY_DATS.items():
+        dst, keep = os.path.join(DAT, f), os.path.join(BAK, "german", f)
+        if not os.path.exists(keep):
+            shutil.copy2(dst, keep)
+        open(dst, "wb").write(patch(open(os.path.join(EN, f), "rb").read()))
     print(f"DAT: {switched} files switched to English, {len(LINES)} areas patched with restored lines, "
           f"Dengeki Store in English")
 
