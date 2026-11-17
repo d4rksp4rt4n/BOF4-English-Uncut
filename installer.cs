@@ -176,6 +176,9 @@ class Installer : Form
         log.Clear();
         Log(any ? "Found an earlier install of this mod; the ticked options are the ones installed."
                 : "Ready. Tick what you want and press Apply.");
+        if (File.Exists(Path.Combine(game, "d3d9.dll")))
+            Log("Note: d3d9.dll found. If it is the German patch's, remove it (and _d3d9_hook_config.txt): " +
+                "it is not needed and its German text layout fixes garble the English text.");
     }
 
     void Run(List<string> chosen)
@@ -198,8 +201,12 @@ class Installer : Form
                 byte[] cur = File.Exists(p) ? File.ReadAllBytes(p) : new byte[0]; string h = Sha(cur);
                 byte[] src;
                 if (h == orig) src = cur;
-                else if (added && g.Any(v => v.Dst == h)) src = new byte[0];
-                else if (g.Any(v => v.Dst == h) && File.Exists(bak) && Sha(File.ReadAllBytes(bak)) == orig) src = File.ReadAllBytes(bak);
+                else if (added) src = new byte[0];                // only this mod adds it (maybe an older build of it)
+                else if (File.Exists(bak) && Sha(File.ReadAllBytes(bak)) == orig)
+                {                                                 // patched before, maybe by an older version
+                    src = File.ReadAllBytes(bak);
+                    if (!g.Any(v => v.Dst == h)) Log(g.Key + ": not from this version; rebuilding from the backed-up original.");
+                }
                 else throw new Exception(g.Key + " is not the original English GOG file (another mod, or the German patch's files?)." +
                                          Environment.NewLine + "Nothing was changed.");
                 if ((target == null ? orig : target.Dst) != h) plan.Add(Tuple.Create(g.Key, src, target));
