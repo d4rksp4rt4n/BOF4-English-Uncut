@@ -2,7 +2,7 @@
 
 A patcher for the English GOG release of *Breath of Fire IV* that restores content cut from the Western
 release and fixes several problems of the PC port. It comes as a small Windows installer with a GUI. Every
-option can be switched on or off, and "Restore original files" undoes everything.
+option can be switched on or off, and "Restore original files" undoes everything. 
 
 | Option | What it does |
 |---|---|
@@ -130,6 +130,10 @@ The loop analysis in `loops\` (only needed to regenerate `reverb\loops_table.h`)
 - Dengeki Store graphics: the Japanese GOG release of Breath of Fire IV
 
 *Breath of Fire IV* is © Capcom. This is an unofficial fan project, not affiliated with Capcom or GOG.
+
+## AI use
+
+This mod was made with help from an AI coding assistant (Claude Code).
 
 ## License
 
